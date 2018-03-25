@@ -1,2 +1,2 @@
-zmqServiceProvider/bin
-zmqServiceProvider/obj
+zmqServiceProvider/bin/*
+zmqServiceProvider/obj/*
