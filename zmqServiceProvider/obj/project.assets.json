@@ -6041,11 +6041,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/aee/dev/zmqServiceProvider/zmqServiceProvider.csproj",
+      "projectUniqueName": "/home/aee/dev/calibrator/zmqServiceProvider/zmqServiceProvider.csproj",
       "projectName": "zmqServiceProvider",
-      "projectPath": "/home/aee/dev/zmqServiceProvider/zmqServiceProvider.csproj",
+      "projectPath": "/home/aee/dev/calibrator/zmqServiceProvider/zmqServiceProvider.csproj",
       "packagesPath": "/home/aee/.nuget/packages/",
-      "outputPath": "/home/aee/dev/zmqServiceProvider/obj/",
+      "outputPath": "/home/aee/dev/calibrator/zmqServiceProvider/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/opt/dotnet/sdk/NuGetFallbackFolder"
