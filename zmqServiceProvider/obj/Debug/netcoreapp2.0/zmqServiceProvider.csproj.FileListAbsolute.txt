@@ -1,0 +1,10 @@
+/home/aee/zmqServiceProvider/bin/Debug/netcoreapp2.0/zmqServiceProvider.deps.json
+/home/aee/zmqServiceProvider/bin/Debug/netcoreapp2.0/zmqServiceProvider.runtimeconfig.json
+/home/aee/zmqServiceProvider/bin/Debug/netcoreapp2.0/zmqServiceProvider.runtimeconfig.dev.json
+/home/aee/zmqServiceProvider/bin/Debug/netcoreapp2.0/zmqServiceProvider.dll
+/home/aee/zmqServiceProvider/bin/Debug/netcoreapp2.0/zmqServiceProvider.pdb
+/home/aee/zmqServiceProvider/obj/Debug/netcoreapp2.0/zmqServiceProvider.csproj.CoreCompileInputs.cache
+/home/aee/zmqServiceProvider/obj/Debug/netcoreapp2.0/zmqServiceProvider.AssemblyInfoInputs.cache
+/home/aee/zmqServiceProvider/obj/Debug/netcoreapp2.0/zmqServiceProvider.AssemblyInfo.cs
+/home/aee/zmqServiceProvider/obj/Debug/netcoreapp2.0/zmqServiceProvider.dll
+/home/aee/zmqServiceProvider/obj/Debug/netcoreapp2.0/zmqServiceProvider.pdb
