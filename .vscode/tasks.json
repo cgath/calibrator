@@ -5,7 +5,10 @@
     "tasks": [
         {
             "label": "build",
-            "command": "TERM=xterm dotnet build",
+            "command": "dotnet build",
+            "options": {
+                "cwd": "${workspaceFolder}/zmqServiceProvider"
+            },
             "type": "shell",
             "group": "build",
             "presentation": {
