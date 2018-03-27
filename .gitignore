@@ -1,2 +1,6 @@
 zmqServiceProvider/bin
 zmqServiceProvider/obj
+
+DotnetWorker/bin
+DotnetWorker/obj
+DotnetWorker/published

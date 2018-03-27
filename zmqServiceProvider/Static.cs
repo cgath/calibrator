@@ -23,8 +23,6 @@ namespace zmqServiceProvider.Static
 
     public static class WorkerService
     {
-        private static DockerClient client = GetDockerClient();
-
         public static bool RunWorker(WorkerConfig config)
         {
             try
@@ -37,6 +35,8 @@ namespace zmqServiceProvider.Static
             }
         }
 
+        private static DockerClient client = GetDockerClient();
+        
         private static DockerClient GetDockerClient()
         {
             var dockerUriString = "unix:///var/run/docker.sock";
@@ -64,10 +64,17 @@ namespace zmqServiceProvider.Static
                 }
             };
 
+            var cmd = new List<string>
+            {
+                "dotnet", "/tmp/published/DotnetWorker.dll", "tcp://*:"+config.hPort
+                //"python", "/tmp/worker.py", "tcp://*:"+config.cPort
+            };
+
             var createParams = new CreateContainerParameters
             {
                 Image = config.image,
-                HostConfig = hostConfig
+                HostConfig = hostConfig,
+                //Cmd = cmd
             };
 
             var status = client.Containers.CreateContainerAsync(createParams).Result;

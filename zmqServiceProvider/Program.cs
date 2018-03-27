@@ -28,14 +28,14 @@ namespace zmqServiceProvider
             using (var server = new RequestSocket())
             {
                 //server.Connect("tcp://localhost:5555");
-
                 //Console.WriteLine("ServiceProvider connected to tcp://localhost:5555");
+
                 Console.WriteLine("Server waiting for requests. Press <Enter> to send. Press <Esc> to quit.");
 
-                var cki = new ConsoleKeyInfo();
-                string message = "Hey Worker! Do some work and get back to me would ya'?";
                 List<int> freePorts = new List<int> { 4000, 4001, 4002, 4003 };
+                string message = "Hey Worker! Do some work and get back to me would ya'?";
 
+                var cki = new ConsoleKeyInfo();
                 while (true)
                 {
                     cki = Console.ReadKey();
@@ -43,8 +43,11 @@ namespace zmqServiceProvider
                     {
                         var port = freePorts.TakeFirst();
                         var config = new WorkerConfig
-                        { 
-                            cPort = port+"/tcp", hIP = "0.0.0.0", hPort = port.ToString()
+                        {
+                            // Set image = xxxx to use different worker ...
+                            cPort = port.ToString()+"/tcp",
+                            hIP = "0.0.0.0",
+                            hPort = port.ToString()
                         };
 
                         WorkerService.RunWorker(config);
@@ -55,6 +58,9 @@ namespace zmqServiceProvider
                         var response = server.ReceiveFrameString();
 
                         Console.WriteLine("Received from Worker: {0}", response);
+                        
+
+                        Console.WriteLine("Hest!");
                     }
 
                     if (cki.Key == ConsoleKey.Escape)
