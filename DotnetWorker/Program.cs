@@ -22,7 +22,8 @@ namespace DotnetWorker
                     // Do Work ...
 
                     // Send response
-                    socket.SendFrame("Hello from worker!");
+                    var response = string.Format("Hello from worker {0}!", connectionString);
+                    socket.SendFrame(response);
                 }
             }
         }

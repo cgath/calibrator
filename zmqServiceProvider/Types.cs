@@ -17,6 +17,8 @@ namespace zmqServiceProvider.Types
     {
         public WorkerConfig config;
 
-        public CreateContainerResponse runStatus;
+        public CreateContainerResponse createStatus;
+
+        public bool runStatus;
     }
 }

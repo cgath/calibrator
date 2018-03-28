@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace zmqServiceProvider.Static
 {
@@ -23,11 +24,11 @@ namespace zmqServiceProvider.Static
 
     public static class WorkerService
     {
-        public static bool RunWorker(WorkerConfig config)
+        public static Worker RunWorker(WorkerConfig config)
         {
             try
             {
-                return RunContainer(CreateContainer(config).runStatus.ID);
+                return RunContainer(CreateContainer(config));
             }
             catch (Exception)
             {
@@ -48,15 +49,21 @@ namespace zmqServiceProvider.Static
 
         private static Worker CreateContainer(WorkerConfig config)
         {
+            var exposedPorts = new Dictionary<string, EmptyStruct>
+            {
+                { config.hPort, new EmptyStruct() }
+            };
+
             var hostConfig = new HostConfig
             {
                 PortBindings = new Dictionary<string, IList<PortBinding>>()
                 {
                     {
-                        config.cPort, new List<PortBinding>() {
-                            new PortBinding()
+                        config.cPort,
+                        new List<PortBinding>
+                        {
+                            new PortBinding
                             { 
-                                HostIP = config.hIP,
                                 HostPort = config.hPort
                             }
                         }
@@ -73,8 +80,9 @@ namespace zmqServiceProvider.Static
             var createParams = new CreateContainerParameters
             {
                 Image = config.image,
+                //ExposedPorts = exposedPorts,
                 HostConfig = hostConfig,
-                //Cmd = cmd
+                Cmd = cmd
             };
 
             var status = client.Containers.CreateContainerAsync(createParams).Result;
@@ -82,18 +90,21 @@ namespace zmqServiceProvider.Static
             return new Worker()
             {
                 config = config,
-                runStatus = status
+                createStatus = status,
+                runStatus = false
             };
         }
 
-        private static bool RunContainer(string id)
+        private static Worker RunContainer(Worker worker)
         {
             var start = new ContainerStartParameters();
+            var id = worker.createStatus.ID;
 
-            return client
-                   .Containers
-                   .StartContainerAsync(id, start)
-                   .IsCompletedSuccessfully;
+            worker.runStatus = client.Containers
+                                     .StartContainerAsync(id, start)
+                                     .Result;
+            
+            return worker;
         }
     }
 }
