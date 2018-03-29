@@ -4,11 +4,10 @@ import time
 
 def main(conn_str):
     #print(zmq.pyzmq_version())
-    print(conn_str)
+    #print(conn_str)
 
     context = zmq.Context()
     socket = context.socket(zmq.REP)
-    #socket.bind("tcp://*:"+port)
     socket.bind(conn_str)
 
     print("Worker listening @ %s" % conn_str)
