@@ -9,13 +9,18 @@ namespace zmqServiceProvider.Workers
     using Docker.DotNet;
     using Docker.DotNet.Models;
 
-    public static class WorkerService
+    public class WorkerService
     {
-        public static Worker RunWorker(WorkerConfig config)
+        public WorkerService()
+        {
+            this.client = GetDockerClient();
+        }
+
+        public void StartWorker(WorkerConfig config)
         {
             try
             {
-                return RunContainer(CreateContainer(config));
+                RunContainer(CreateContainer(config));
             }
             catch (Exception e)
             {
@@ -25,9 +30,9 @@ namespace zmqServiceProvider.Workers
             }
         }
 
-        private static DockerClient client = GetDockerClient();
-        
-        private static DockerClient GetDockerClient()
+        private DockerClient client;
+
+        private DockerClient GetDockerClient()
         {
             var dockerUriString = "unix:///var/run/docker.sock";
             if (OS.IsWindows()) dockerUriString = "npipe://./pipe/docker_engine";
@@ -36,7 +41,7 @@ namespace zmqServiceProvider.Workers
             return new DockerClientConfiguration(dockerUri).CreateClient();
         }
 
-        private static Worker CreateContainer(WorkerConfig config)
+        private Worker CreateContainer(WorkerConfig config)
         {
             var exposedPorts = new Dictionary<string, EmptyStruct>
             {
@@ -82,18 +87,22 @@ namespace zmqServiceProvider.Workers
                 createStatus = status,
                 runStatus = false
             };
+
+            //client.Containers.CreateContainerAsync(createParams);
         }
 
-        private static Worker RunContainer(Worker worker)
+        private void RunContainer(Worker worker)
         {
             var start = new ContainerStartParameters();
             var id = worker.createStatus.ID;
 
-            worker.runStatus = client.Containers
-                                     .StartContainerAsync(id, start)
-                                     .Result;
+            //worker.runStatus = client.Containers
+            //                         .StartContainerAsync(id, start)
+            //                         .Result;
             
-            return worker;
+            //return worker;
+
+            client.Containers.StartContainerAsync(id, start);
         }
     }
 }

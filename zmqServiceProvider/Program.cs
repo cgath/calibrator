@@ -14,41 +14,85 @@ namespace zmqServiceProvider
 
     class Program
     {
+        static void HandleCalibration(List<int> ports, string model, string data)
+        {
+            // TODO: The ports should not be passed in. Instead the calibration
+            // handler should determine the number of workers based on the model
+            // and data
+
+            var workerService = new WorkerService();
+
+            /*
+            foreach(var port in ports)
+            {
+                var config = new WorkerConfig
+                {
+                    cPort = port.ToString()+"/tcp",
+                    hIP = "0.0.0.0",
+                    hPort = port.ToString()
+                };
+            
+                // Start worker
+                Task.Factory.StartNew(() =>
+                    workerService.StartWorker(config));
+            }
+            */
+
+            var port = ports.First();
+            var config = new WorkerConfig
+            {
+                cPort = port.ToString()+"/tcp",
+                hIP = "0.0.0.0",
+                hPort = port.ToString(),
+                cmd = new List<string>
+                {
+                    "dotnet", "/tmp/published/DotnetWorker.dll", "tcp://*:"+port
+                    //"python", "/tmp/worker.py", "tcp://*:"+config.cPort
+                }
+            };
+
+            workerService.StartWorker(config);
+        }
+
         static void Main(string[] args)
         {
-            /* Connect to worker and send when requested */
             using (var server = new ResponseSocket())
+            //using (var comm = new RequestSocket("tcp://localhost:4000"))
+            //using (var poller = new NetMQPoller { comm })
             {
+                //comm.ReceiveReady += (s, a) =>
+                //{
+                //    bool more;
+                //    string messageIn = a.Socket.ReceiveFrameString(out more);
+                //    Console.WriteLine("Poller received: {0}", messageIn);
+                //};
+
+                // Start polling
+                //poller.RunAsync();
+
                 Console.WriteLine("Server waiting for requests. " +
                                   "Press <Enter> to send. Press <Esc> to quit.");
 
                 List<int> freePorts = Enumerable.Range(4000,5999).ToList();
-                List<Worker> workers = new List<Worker>();
+
+                // TODO: Handle data and model transfer ...
+                string model = "<Here goes the serialized model (protobuf rather than string?)";
+                string data = "<Here goes the REDIS address of the data>";
 
                 var cki = new ConsoleKeyInfo();
-                string message = "Hey Worker! Do some work and get back to me would ya'?";
                 while (true)
                 {
                     cki = Console.ReadKey();
                     if (cki.Key == ConsoleKey.Enter)
                     {
                         Console.WriteLine("Request received. Delegating ...");
-                        var nextPort = freePorts.TakeFirst();
-
-                        Task.Factory.StartNew((port) =>
-                        {
-                            var config = new WorkerConfig
-                            {
-                                // Set image = xxxx to use different worker ...
-                                cPort = port.ToString()+"/tcp",
-                                hIP = "0.0.0.0",
-                                hPort = port.ToString()
-                            };
-
-                            // Start worker
-                            var worker = WorkerService.RunWorker(config);
-
-                            using(var socket = new RequestSocket())
+                        
+                        var nextPorts = freePorts.TakeRange(3);
+                        Task.Factory.StartNew(() => 
+                            HandleCalibration(nextPorts, model, data));
+                    }
+/*
+                    using(var socket = new RequestSocket())
                             {
                                 if (worker.runStatus)
                                 {
@@ -65,11 +109,7 @@ namespace zmqServiceProvider
                                     Console.WriteLine("Worker not running ...");
                                 }
                             }
-
-                            workers.Add(worker);
-                        }, nextPort);
-                    }
-
+*/
                     if (cki.Key == ConsoleKey.Escape)
                     {
                         break;

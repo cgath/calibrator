@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace zmqServiceProvider.Types
 {
@@ -11,6 +12,7 @@ namespace zmqServiceProvider.Types
         public string cPort;
         public string hIP;
         public string hPort;
+        public List<string> cmd;
     }
 
     public class Worker
