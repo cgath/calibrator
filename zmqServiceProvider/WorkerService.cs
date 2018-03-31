@@ -96,13 +96,13 @@ namespace zmqServiceProvider.Workers
             var start = new ContainerStartParameters();
             var id = worker.createStatus.ID;
 
-            //worker.runStatus = client.Containers
-            //                         .StartContainerAsync(id, start)
-            //                         .Result;
+            worker.runStatus = client.Containers
+                                     .StartContainerAsync(id, start)
+                                     .Result;
             
             //return worker;
 
-            client.Containers.StartContainerAsync(id, start);
+            //client.Containers.StartContainerAsync(id, start);
         }
     }
 }

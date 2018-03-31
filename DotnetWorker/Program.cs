@@ -10,6 +10,7 @@ namespace DotnetWorker
         static void Main(string[] args)
         {
             string connectionString = args[0];
+            using (var comm = new RequestSocket("tcp://localhost:3333"))
             using (var socket = new ResponseSocket())
             {
                 socket.Bind(connectionString);
@@ -22,8 +23,11 @@ namespace DotnetWorker
                     // Do Work ...
 
                     // Send response
+                    //var response = string.Format("Hello from worker {0}!", connectionString);
+                    //socket.SendFrame(response);
+
                     var response = string.Format("Hello from worker {0}!", connectionString);
-                    socket.SendFrame(response);
+                    comm.SendFrame(response);
                 }
             }
         }

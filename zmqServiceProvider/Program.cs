@@ -52,23 +52,32 @@ namespace zmqServiceProvider
             };
 
             workerService.StartWorker(config);
+
+            // TODO: After having started the calibration handler this
+            // thread should exit and let the server listen for the response
         }
 
         static void Main(string[] args)
         {
             using (var server = new ResponseSocket())
-            //using (var comm = new RequestSocket("tcp://localhost:4000"))
-            //using (var poller = new NetMQPoller { comm })
+            using (var comm = new ResponseSocket("tcp://*:3333"))
+            using (var poller = new NetMQPoller { comm })
             {
-                //comm.ReceiveReady += (s, a) =>
-                //{
-                //    bool more;
-                //    string messageIn = a.Socket.ReceiveFrameString(out more);
-                //    Console.WriteLine("Poller received: {0}", messageIn);
-                //};
+                comm.ReceiveReady += (s, a) =>
+                {
+                    bool more;
+                    string messageIn = a.Socket.ReceiveFrameString(out more);
+                    //Console.WriteLine("Poller received: {0}", messageIn);
+
+                    using (System.IO.StreamWriter file = 
+                    new System.IO.StreamWriter(@"C:\Temp\CalibratorLog.txt", true))
+                    {
+                        file.WriteLine("Fourth line");
+                    }
+                };
 
                 // Start polling
-                //poller.RunAsync();
+                poller.RunAsync();
 
                 Console.WriteLine("Server waiting for requests. " +
                                   "Press <Enter> to send. Press <Esc> to quit.");
