@@ -20,6 +20,8 @@ namespace zmqServiceProvider
             // handler should determine the number of workers based on the model
             // and data
 
+            Console.WriteLine("Handling Calibration ...");
+
             var workerService = new WorkerService();
 
             /*
@@ -51,29 +53,35 @@ namespace zmqServiceProvider
                 }
             };
 
-            workerService.StartWorker(config);
-
             // TODO: After having started the calibration handler this
             // thread should exit and let the server listen for the response
+            workerService.StartWorker(config);
+            using (var worker = new PushSocket("tcp://localhost:"+port))
+            {
+                Console.WriteLine("Pushing to {0}", "tcp://localhost:"+port);
+                worker.SendFrame("Hey worker, do some work and get back to us ok?");
+            }
         }
 
         static void Main(string[] args)
         {
             using (var server = new ResponseSocket())
-            using (var comm = new ResponseSocket("tcp://*:3333"))
-            using (var poller = new NetMQPoller { comm })
+            using (var comm = new PullSocket("@tcp://*:9999"))
+            using (var poller = new NetMQPoller{ comm })
             {
                 comm.ReceiveReady += (s, a) =>
                 {
-                    bool more;
-                    string messageIn = a.Socket.ReceiveFrameString(out more);
-                    //Console.WriteLine("Poller received: {0}", messageIn);
+                    //bool more;
+                    //string messageIn = a.Socket.ReceiveFrameString(out more);
+                    string message = a.Socket.ReceiveFrameString();
+                    
+                    Console.WriteLine("Poller ==> Received: {0}", message);
 
-                    using (System.IO.StreamWriter file = 
-                    new System.IO.StreamWriter(@"C:\Temp\CalibratorLog.txt", true))
-                    {
-                        file.WriteLine("Fourth line");
-                    }
+                    //using (System.IO.StreamWriter file = 
+                    //new System.IO.StreamWriter(@"C:\Temp\CalibratorLog.txt", true))
+                    //{
+                    //    file.WriteLine("Fourth line");
+                    //}
                 };
 
                 // Start polling
@@ -97,9 +105,19 @@ namespace zmqServiceProvider
                         Console.WriteLine("Request received. Delegating ...");
                         
                         var nextPorts = freePorts.TakeRange(3);
-                        Task.Factory.StartNew(() => 
-                            HandleCalibration(nextPorts, model, data));
+                        //Task.Factory.StartNew(() => 
+                        //    HandleCalibration(nextPorts, model, data));
+
+                        // DEBUG //
+                        using (var worker = new PushSocket("tcp://localhost:4000"))
+                        {
+                            worker.SendFrame("Hey worker, do some work and get back to us ok?");
+                        }
                     }
+
+                    //var message = comm.ReceiveFrameString();
+                    //Console.WriteLine(message);
+
 /*
                     using(var socket = new RequestSocket())
                             {

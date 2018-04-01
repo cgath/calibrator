@@ -60,13 +60,13 @@ namespace zmqServiceProvider.Workers
                                 HostPort = config.hPort
                             }
                         }
-                    }
+                    },
                 }
             };
 
             var cmd = new List<string>
             {
-                "dotnet", "/tmp/published/DotnetWorker.dll", "tcp://*:"+config.hPort
+                "dotnet", "/tmp/published/DotnetWorker.dll", "@tcp://*:"+config.hPort
                 //"python", "/tmp/worker.py", "tcp://*:"+config.cPort
             };
 

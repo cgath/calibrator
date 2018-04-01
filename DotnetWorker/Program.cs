@@ -10,24 +10,24 @@ namespace DotnetWorker
         static void Main(string[] args)
         {
             string connectionString = args[0];
-            using (var comm = new RequestSocket("tcp://localhost:3333"))
-            using (var socket = new ResponseSocket())
+            using (var send = new PushSocket(">tcp://localhost:9999"))
+            using (var receive = new PullSocket(connectionString))
             {
-                socket.Bind(connectionString);
-                Console.WriteLine("Worker listening @ {0}", connectionString);
+                Console.WriteLine("Worker now listening @ {0}", connectionString);
 
                 while (true)
                 {
-                    var message = socket.ReceiveFrameString();
-                    
+                    // Block for request
+                    var message = receive.ReceiveFrameString();
+                    Console.WriteLine("Worker received: {0}", message);
+
                     // Do Work ...
 
                     // Send response
-                    //var response = string.Format("Hello from worker {0}!", connectionString);
-                    //socket.SendFrame(response);
-
-                    var response = string.Format("Hello from worker {0}!", connectionString);
-                    comm.SendFrame(response);
+                    var response = string.Format("Hello from worker {0}!",
+                                                 connectionString);
+                    Console.WriteLine("Worker sending: {0}", response);
+                    send.SendFrame(response);
                 }
             }
         }
