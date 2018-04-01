@@ -43,38 +43,41 @@ namespace zmqServiceProvider.Workers
 
         private Worker CreateContainer(WorkerConfig config)
         {
-            var exposedPorts = new Dictionary<string, EmptyStruct>
-            {
-                { config.hPort, new EmptyStruct() }
-            };
+            //var exposedPorts = new Dictionary<string, EmptyStruct>
+            //{
+            //    { config.hPort, new EmptyStruct() }
+            //};
 
-            var hostConfig = new HostConfig
-            {
-                PortBindings = new Dictionary<string, IList<PortBinding>>()
-                {
-                    {
-                        config.cPort, new List<PortBinding>
-                        {
-                            new PortBinding
-                            { 
-                                HostPort = config.hPort
-                            }
-                        }
-                    },
-                }
-            };
+            //PortBindings = new Dictionary<string, IList<PortBinding>>()
+            //{
+            //    {
+            //        config.cPort, new List<PortBinding>
+            //        {
+            //            new PortBinding
+            //            {
+            //                HostIP = "0.0.0.0",
+            //                HostPort = config.hPort
+            //            }
+            //        }
+            //    },
+            //}
+            
+            //var cmd = new List<string>
+            //{
+            //    "dotnet", "/tmp/published/DotnetWorker.dll", "tcp://0.0.0.0:"+config.hPort
+            //    //"python", "/tmp/worker.py", "tcp://*:"+config.cPort
+            //};
 
-            var cmd = new List<string>
-            {
-                "dotnet", "/tmp/published/DotnetWorker.dll", "@tcp://*:"+config.hPort
-                //"python", "/tmp/worker.py", "tcp://*:"+config.cPort
-            };
+            //var hostConfig = new HostConfig
+            //{
+            //    NetworkMode = "host"
+            //};
 
             var createParams = new CreateContainerParameters
             {
                 Image = config.image,
-                HostConfig = hostConfig,
-                Cmd = cmd
+                HostConfig = new HostConfig { NetworkMode = "host" },
+                Cmd = config.cmd
             };
 
             var status = client.Containers
@@ -87,8 +90,6 @@ namespace zmqServiceProvider.Workers
                 createStatus = status,
                 runStatus = false
             };
-
-            //client.Containers.CreateContainerAsync(createParams);
         }
 
         private void RunContainer(Worker worker)

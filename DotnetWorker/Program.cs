@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace DotnetWorker
 {
@@ -10,24 +11,27 @@ namespace DotnetWorker
         static void Main(string[] args)
         {
             string connectionString = args[0];
-            using (var send = new PushSocket(">tcp://localhost:9999"))
-            using (var receive = new PullSocket(connectionString))
+            using (var send = new PushSocket(">tcp://127.0.0.1:9999"))
+            using (var receive = new ResponseSocket(connectionString))
             {
-                Console.WriteLine("Worker now listening @ {0}", connectionString);
-
                 while (true)
                 {
                     // Block for request
                     var message = receive.ReceiveFrameString();
-                    Console.WriteLine("Worker received: {0}", message);
+                    var msgId = Guid.NewGuid().ToString();
+
+                    // Acknowledge
+                    receive.SendFrame("Worker acknowledged!");
 
                     // Do Work ...
+                    Thread.Sleep(2000);
 
                     // Send response
-                    var response = string.Format("Hello from worker {0}!",
-                                                 connectionString);
-                    Console.WriteLine("Worker sending: {0}", response);
-                    send.SendFrame(response);
+                    send.SendFrame(string.Format("Worker {0} completed task {1}",
+                                                 connectionString, msgId));
+
+                    // Exit worker
+                    break;
                 }
             }
         }
