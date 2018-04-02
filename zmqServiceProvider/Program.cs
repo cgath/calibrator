@@ -9,6 +9,7 @@ namespace zmqServiceProvider
     using NetMQ;
     using NetMQ.Sockets;
 
+    using zmqServiceProvider.Static;
     using zmqServiceProvider.Types;
     using zmqServiceProvider.Extensions;
     using zmqServiceProvider.Workers;
@@ -73,18 +74,27 @@ namespace zmqServiceProvider
                 poller.RunAsync();
 
                 Console.WriteLine("Server waiting for requests. " +
-                                  "Press <Enter> to send. Press <Esc> to quit.");
+                                  "Press <Spacebar> to generate test data. " +
+                                  "Press <Enter> to send. " + 
+                                  "Press <Esc> to quit.");
 
                 List<int> freePorts = Enumerable.Range(4000,5999).ToList();
 
                 // TODO: Handle data and model transfer ...
                 string model = "<Here goes the serialized model (protobuf?)";
-                string data = "<Here goes the REDIS address of the data>";
+                string data = Guid.NewGuid().ToString();
 
                 var cki = new ConsoleKeyInfo();
                 while (true)
                 {
                     cki = Console.ReadKey();
+                    if (cki.Key == ConsoleKey.Spacebar)
+                    {
+                        Console.Write("Generating test data ... ");
+                        var filename =  data + ".dat";
+                        Data.GenerateDataFile(filename, 40000, 4200);
+                        Console.WriteLine("Done!");
+                    }
                     if (cki.Key == ConsoleKey.Enter)
                     {
                         Console.WriteLine("Request received. Delegating ...");
