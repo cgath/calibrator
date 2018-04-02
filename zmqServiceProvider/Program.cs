@@ -28,7 +28,7 @@ namespace zmqServiceProvider
                 hPort = port.ToString(),
                 cmd = new List<string>
                 {
-                    "dotnet", "/tmp/published/DotnetWorker.dll", "tcp://0.0.0.0:"+port
+                    "dotnet", "/tmp/published/CalibrationHandler.dll", "tcp://0.0.0.0:"+port
                     //"python", "/tmp/worker.py", "tcp://*:"+config.cPort
                 }
             };
@@ -40,7 +40,7 @@ namespace zmqServiceProvider
             using (var worker = new RequestSocket("tcp://127.0.0.1:"+port))
             {
                 // TODO: Serialize <model, data> ...
-                
+
                 Console.WriteLine("Pushing to {0}", "tcp://localhost:"+port);
                 worker.SendFrame("Hey worker, do some work and get back to us ok?");
 

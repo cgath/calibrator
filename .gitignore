@@ -3,6 +3,10 @@
 zmqServiceProvider/bin
 zmqServiceProvider/obj
 
+CalibrationHandler/bin
+CalibrationHandler/obj
+CalibrationHandler/published
+
 DotnetWorker/bin
 DotnetWorker/obj
 DotnetWorker/published

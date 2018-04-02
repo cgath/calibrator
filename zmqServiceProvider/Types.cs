@@ -8,7 +8,7 @@ namespace zmqServiceProvider.Types
 
     public class WorkerConfig
     {
-        public string image = "aee/worker-dotnet:latest";
+        public string image = "aee/calibration-handler:latest";
         public string cPort;
         public string hIP;
         public string hPort;
